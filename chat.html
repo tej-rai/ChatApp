@@ -1,24 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App</title>
-    <link rel="stylesheet" href="chat.css">
-    <script src="chat.js" defer></script>
+    <title>Chat App</title>  
+    <style>
+        .container {
+            margin: auto;
+            width: 60%;
+            border: 5px solid #000000;
+            padding: 10px;
+        }
+        #chatDisplay p {
+            font-size: 25px;
+        }
+        .bottom-panel, .bottom-panel input {
+            font-size: 25px;
+        }
+        #sendButton {
+            font-size: 22px;
+        }
+    </style> 
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
+    
 </head>
 <body>
     <div class="container" style="height: 500px;max-height: 500px;overflow-y: scroll;">
-        <div id="chatDisplay">
-            
-        </div>
+        <div id="chatDisplay"></div>
     </div>
     <div class="container bottom-panel">
         <p>Current Server Time: <span id="time-display"></span></p>
-        <p>Your name: <input type="text" id="name" /></p>
-        <p>Your message: <input type="text" id="message" style="width: 100%" /></p>
-        <button id="sendButton">Send Message</button>
+        <p>Your Name: <input type="text" id="name" /></p>
+        <p>Your Message: <input type="text" id="message" style="width: 100%" /></p>
+        <button id='sendButton'>Send Message</button>
     </div>
+    <script>
+        // define our define elements
+        const displayArea = document.querySelector('#chatDisplay');
+        const sendButton = document.querySelector('#sendButton');
+        const timeDisplay = document.querySelector('#time-display');
+        const nameTextbox = document.querySelector('#name');
+        const messageTextbox = document.querySelector('#message');
+
+
+        const socket = io();
+
+        // capture and log welcome message to the server
+        socket.on('welcome', (message) => {
+            const pTag = document.createElement('p');
+            pTag.innerHTML = message;
+            displayArea.appendChild(pTag);
+
+        });
+
+        // capture any message from any client
+        socket.on('message', message => {
+            //display the message in the chat
+            console.log(message.name);
+            console.log(message.message);
+            // display in the displayArea
+            const pTag = document.createElement('p');
+            pTag.innerHTML = `[${message.name}] ${message.message}`;
+            displayArea.appendChild(pTag);
+        });
+
+        socket.on('time', time => {
+            timeDisplay.innerHTML = time;
+        });
+
+        // send a message to the server when that button is clicked
+        sendButton.addEventListener('click', ()=> {
+            if(nameTextbox.value.length === 0) {
+                alert('You must enter a name');
+            }
+            else if(messageTextbox.value.length === 0) {
+                alert('You must enter a message');
+            }
+            else {
+                // send the message
+                socket.emit('message', { 
+                    name: nameTextbox.value , 
+                    message: messageTextbox.value 
+                });
+                // clear the message textbox
+                messageTextbox.value = '';
+            }
+        });
+    </script>
 </body>
 </html>
