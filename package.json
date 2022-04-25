@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "express": "^4.17.3",
+    "nodemon": "^2.0.15",
+    "socket.io": "^4.5.0"
+  },
+  "name": "chatapp",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tej-rai/ChatApp.git"
+  },
+  "author": "Tej Rai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tej-rai/ChatApp/issues"
+  },
+  "homepage": "https://github.com/tej-rai/ChatApp#readme"
+}
